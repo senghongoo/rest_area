@@ -38,7 +38,7 @@ public class MemberDAO {
 		try {
 			con = dbCon.getConn();
 
-			String selectTotal = "select count(*) cnt from user_info";
+			String selectTotal = "select count(*) cnt from user_info where delete_flag = 'N'";
 			
 			pstmt = con.prepareStatement(selectTotal);
 
@@ -72,6 +72,7 @@ public class MemberDAO {
 			.append("	from (	select user_id, email, join_date, 		 ")
 			.append("	row_number() over( order by join_date desc) rnum ")
 			.append("	from user_info									 ")
+			.append("	where  delete_flag = 'N'						 ")
 			.append("	) where rnum between ? and ?					 ");
 			
 			pstmt = con.prepareStatement(selectRangeMember.toString());

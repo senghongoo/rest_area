@@ -67,12 +67,14 @@ public class MemberService {
 		int movePage = 0;
 		StringBuilder prevMark = new StringBuilder();
 
-		prevMark.append("[&lt;&lt;]");
+		prevMark.append("<li class='page-item disabled'><a class='page-link' href='#' aria-label='Previous'>"
+				+ "<span aria-hidden='true'>&laquo;</span>"
+				+ "</a></li>");
 
 		if (rDTO.getCurrentPage() > pageNumber) {
 			movePage = startPage - 1;
 			prevMark.delete(0, prevMark.length());
-			prevMark.append("[ <a href='").append(rDTO.getUrl()).append("?currentPage=").append(movePage).append("' class='prevMark'>&lt;&lt;</a> ]");
+			prevMark.append("<li class='page-item'><a class='page-link' href='").append(rDTO.getUrl()).append("?currentPage=").append(movePage).append("' aria-label='Previous'><span aria-hidden='true'>&laquo;</span></a></li>");
 		} // end if
 
 		StringBuilder pageLink = new StringBuilder();
@@ -80,24 +82,24 @@ public class MemberService {
 
 		while (movePage <= endPage) {
 			if (movePage == rDTO.getCurrentPage()) {
-				pageLink.append("[ <span class='currentPage'>").append(movePage).append("</span> ]");
+				pageLink.append("<li class='page-item'><a class='page-link' href='#'>").append(movePage).append("</a></li>");
 			} else {
-				pageLink.append("[ <a class='notCurrentPage' href='").append(rDTO.getUrl()).append("?currentPage=")
-						.append(movePage).append("'>").append(movePage).append("</a> ]");
+				pageLink.append("<li class='page-item'><a class='page-link' href='").append(rDTO.getUrl()).append("?currentPage=")
+						.append(movePage).append("'>").append(movePage).append("</a></li>");
 			} // end else
 
 			movePage++;
 		} // end while
 
-		StringBuilder nextMark = new StringBuilder("[&gt;&gt;]");
+		StringBuilder nextMark = new StringBuilder("<li class='page-item disabled'><a class='page-link' aria-label='Next'><span aria-hidden='true'>&raquo;</span></a></li>");
 		if (rDTO.getTotalPage() > endPage) {
 			movePage = endPage + 1;
 			nextMark.delete(0, nextMark.length());
-			nextMark.append("[ <a class='nextMark' href='").append(rDTO.getUrl()).append("?currentPage=")
-					.append(movePage).append("'>&gt;&gt;</a> ]");
+			nextMark.append("<li class='page-item'><a class='page-link' href='").append(rDTO.getUrl()).append("?currentPage=")
+					.append(movePage).append("'><span aria-hidden='true'>&raquo;</span></a></li>");
 		} // end if
 
-		pagination.append(prevMark).append(" ... ").append(pageLink).append(" ... ").append(nextMark);
+		pagination.append(prevMark).append(pageLink).append(nextMark);
 
 		return pagination.toString();
 	}// pagination
@@ -130,14 +132,19 @@ public class MemberService {
 		return mdDTO;
 	}// searchOneMember
 
-	public void removeMember(String id) {
+	public boolean removeMember(String id) {
+		boolean flag = false;
+		
 		MemberDAO mDAO = MemberDAO.getInstance();
 
 		try {
 			mDAO.deleteMember(id);
+			flag = true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} // end catch
+		
+		return flag;
 	}// removeMember
 
 }// class

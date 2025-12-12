@@ -7,6 +7,7 @@
 <%
 request.setCharacterEncoding("UTF-8");
 %>
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%-- <c:if test="${empty date}">
@@ -21,7 +22,7 @@ request.setCharacterEncoding("UTF-8");
 
 <title>회원 관리</title>
 
-<!-- bootstrap CDN 시작 -->
+<!-- bootstrap CDN -->
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
 	rel="stylesheet"
@@ -32,17 +33,16 @@ request.setCharacterEncoding("UTF-8");
 	integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
 	crossorigin="anonymous"></script>
 
-<!-- 링크 수정 필요 -->
 <link
 	href="https://getbootstrap.com/docs/5.3/examples/dashboard/dashboard.css"
 	rel="stylesheet">
 
-<!-- jQuery -->
+<!-- jQuery CDN -->
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 <jsp:include page="../template/admin_style_css.jsp" />
 
-<!-- 수정 -->
 <style type="text/css">
 th, td {
 	text-align: center;
@@ -64,6 +64,10 @@ th, td {
 	color: #333;
 }
 
+.page-link {
+	border: 1px solid #ccc !important;
+}
+
 .page-item-hover a {
 	color: rgb(51, 51, 51) !important;
 }
@@ -76,7 +80,16 @@ th, td {
 		}).on("mouseout", ".page-item", function() {
 			$(this).removeClass("page-item-hover");
 		});
-	});
+	});// ready
+
+	function rmMember(id) {
+		if (confirm("해당 회원을 삭제하시겠습니까?")) {
+			$("#id").val(id);
+
+			$("#frm")[0].action = "removeMemberProcess.jsp";
+			$("#frm").submit();
+		}//end if
+	};// rmMember
 </script>
 </head>
 <body>
@@ -160,27 +173,26 @@ th, td {
 									</tr>
 								</c:if>
 								<c:forEach var="mmDTO" items="${ memberList }" varStatus="i">
-									<tr>
+									<tr style="cursor: pointer;" onclick="location.href='member_detail.jsp?id=${ mmDTO.id }'">
 										<td><c:out
 												value="${ totalCnt - (currentPage-1) * pageScale - i.index }"></c:out></td>
-										<td><c:out value="${ mmDTO.id }"></c:out></a></td>
+										<td><c:out value="${ mmDTO.id }"></c:out></td>
 										<td><c:out value="${ mmDTO.email }"></c:out></td>
 										<td><c:out value="${ mmDTO.joinDate }"></c:out></td>
-										<td><button class="btn btn-danger">삭제하기</button></td>
+										<td><input type="button" value="삭제하기" id="btnDelete"
+											class="btn btn-danger" onclick="event.stopPropagation(); rmMember('${ mmDTO.id }')" /></td>
 									</tr>
 								</c:forEach>
 							</tbody>
 						</table>
+						<form action="removeMemberProcess.jsp" id="frm">
+							<input type="hidden" name="id" id="id" style="display: none" />
+						</form>
 					</div>
 					<div id="bottom">
 						<nav aria-label="Page navigation example">
-							<div id="pagination" style="text-align: center;">
-								<c:out value="${ pagination }" escapeXml="false"></c:out>
-							</div>
 							<ul class="pagination" id="pagination-ul">
-								<c:forEach var="page" begin="1" end="${ totalPage }" step="1">
-									<a href="member_list.jsp?currentPage=${ page }">${ page }</a>
-								</c:forEach>
+								<c:out value="${ pagination }" escapeXml="false"></c:out>
 							</ul>
 						</nav>
 					</div>
