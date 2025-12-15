@@ -1,11 +1,11 @@
-package kr.co.sist.member;
+package kr.co.sist.restarea;
 
 public class RangeDTO {
 
 	private int startNum, endNum;
 	private int totalPage = 0;
 	private int currentPage = 1;
-	private String url;
+	private String keyword, url;
 
 	public int getStartNum() {
 		return startNum;
@@ -39,6 +39,14 @@ public class RangeDTO {
 		this.currentPage = currentPage;
 	}
 
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+
 	public String getUrl() {
 		return url;
 	}
@@ -50,7 +58,7 @@ public class RangeDTO {
 	@Override
 	public String toString() {
 		return "RangeDTO [startNum=" + startNum + ", endNum=" + endNum + ", totalPage=" + totalPage + ", currentPage="
-				+ currentPage + ", url=" + url + "]";
+				+ currentPage + ", keyword=" + keyword + ", url=" + url + "]";
 	}
 
 }// class

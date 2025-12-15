@@ -4,22 +4,32 @@ import java.util.Date;
 
 public class RestareaManageDTO {
 
-	private String name, address, restareaTel, amenities;
+	private int restareaCode;
+	private String name, line, restareaTel, address;
 	private Date addDate, updateDate;
 
 	public RestareaManageDTO() {
 		super();
 	}
 
-	public RestareaManageDTO(String name, String address, String restareaTel, String amenities, Date addDate,
-			Date updateDate) {
+	public RestareaManageDTO(int restareaCode, String name, String line, String restareaTel, String address,
+			Date addDate, Date updateDate) {
 		super();
+		this.restareaCode = restareaCode;
 		this.name = name;
-		this.address = address;
+		this.line = line;
 		this.restareaTel = restareaTel;
-		this.amenities = amenities;
+		this.address = address;
 		this.addDate = addDate;
 		this.updateDate = updateDate;
+	}
+
+	public int getRestareaCode() {
+		return restareaCode;
+	}
+
+	public void setRestareaCode(int restareaCode) {
+		this.restareaCode = restareaCode;
 	}
 
 	public String getName() {
@@ -30,12 +40,12 @@ public class RestareaManageDTO {
 		this.name = name;
 	}
 
-	public String getAddress() {
-		return address;
+	public String getLine() {
+		return line;
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
+	public void setLine(String line) {
+		this.line = line;
 	}
 
 	public String getRestareaTel() {
@@ -46,12 +56,12 @@ public class RestareaManageDTO {
 		this.restareaTel = restareaTel;
 	}
 
-	public String getAmenities() {
-		return amenities;
+	public String getAddress() {
+		return address;
 	}
 
-	public void setAmenities(String amenities) {
-		this.amenities = amenities;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public Date getAddDate() {
@@ -72,8 +82,9 @@ public class RestareaManageDTO {
 
 	@Override
 	public String toString() {
-		return "RestareaManageDTO [name=" + name + ", address=" + address + ", restareaTel=" + restareaTel
-				+ ", Amenities=" + amenities + ", addDate=" + addDate + ", updateDate=" + updateDate + "]";
+		return "RestareaManageDTO [restareaCode=" + restareaCode + ", name=" + name + ", line=" + line
+				+ ", restareaTel=" + restareaTel + ", address=" + address + ", addDate=" + addDate + ", updateDate="
+				+ updateDate + "]";
 	}
 
 }// class

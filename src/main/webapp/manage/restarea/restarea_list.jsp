@@ -1,10 +1,19 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<% request.setCharacterEncoding("UTF-8"); %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="kr.co.sist.restarea.RestareaManageService"%>
+<%@ page import="kr.co.sist.restarea.RestareaManageDTO"%>
+<%@ page import="java.util.List"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+
+<%
+request.setCharacterEncoding("UTF-8");
+%>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%-- <c:if test="${empty date}">
   <c:redirect url="http://192.168.10.89/team_second_prj/admin/login/login_main.jsp"/>
 </c:if> --%>
+
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
 <head>
@@ -18,17 +27,25 @@
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 <!-- bootstrap CDN 시작 -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+	crossorigin="anonymous">
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+	crossorigin="anonymous"></script>
 
-<!-- 링크 수정 필요 -->
-<link href="https://getbootstrap.com/docs/5.3/examples/dashboard/dashboard.css" rel="stylesheet">
+<link
+	href="https://getbootstrap.com/docs/5.3/examples/dashboard/dashboard.css"
+	rel="stylesheet">
 
 <!-- jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <jsp:include page="../template/admin_style_css.jsp" />
-
 
 <style type="text/css">
 #top {
@@ -87,133 +104,43 @@ td {
 	color: #333;
 }
 
+.page-link {
+	border: 1px solid #ccc !important;
+}
+
 .page-item-hover a {
 	color: rgb(51, 51, 51) !important;
 }
 </style>
 
 <script type="text/javascript">
-const totalItems = 50;
-const itemsPerPage = 10;
-const totalPages = Math.ceil(totalItems / itemsPerPage);
-let currentPage = 1;
+	$(function() {
+		$("#pagination-ul").on("mouseover", ".page-item", function() {
+			$(this).addClass("page-item-hover");
+		}).on("mouseout", ".page-item", function() {
+			$(this).removeClass("page-item-hover");
+		});// on
 
-function generateData() {
-	const data = [];
-	const restAreaNames = ["덕평자연휴게소", "마장휴게소", "금강휴게소", "행담도휴게소", "내린천휴게소"];
-	const addresses = ["경기 이천시 마장면", "경기 광주시 중부대로", "충북 옥천군 동이면", "충남 당진시 신평면", "강원 인제군 상남면"];
-	const amenitiesList = ["주유소, 식당가, 편의점", "호텔, 쇼핑몰, 푸드코트", "선상카페, 쉼터", "아울렛, 놀이시설", "수소차 충전소, 휴게공간"];
+		$("#btnSearch").click(function() {
+			searchRestarea();
+		});// click
 
-	for (let i = 1; i <= totalItems; i++) {
-		const day = String(i % 30 + 1).padStart(2, '0');
-		const randomDateOffset = Math.floor(Math.random() * 5); // 0~4일 차이
-		const randomDay = String((i % 30 + 1 + randomDateOffset) % 30 + 1).padStart(2, '0');
-		const num = String(1000 + i).padStart(4, '0')
+		$("#keyword").keyup(function(evt) {
+			if (evt.which == 13) {
+				searchRestarea();
+			}// end if
+		});// keyup
 
-		data.push({
-			id: i,
-			restAreaName: restAreaNames[i % restAreaNames.length], // 예시 데이터
-			address: addresses[i % addresses.length],
-			phoneNumber: `031-123-${num}`,
-			amenities: amenitiesList[i % amenitiesList.length],
-			createdAt: `2025-11-${day}`,
-			updatedAt: `2025-11-${randomDay}`
-		});
-	}
+		<c:if test="${ not empty param.keyword }">
+		$("#keyword").val("${ param.keyword }")
+		</c:if>
+	});// ready
 
-	return data.reverse(); 
-}
-
-const allData = generateData();
-
-function renderTable(page) {
-	const start = (page - 1) * itemsPerPage;
-	const end = start + itemsPerPage;
-	const itemsToShow = allData.slice(start, end);
-
-	let content = '';
-	itemsToShow.forEach(item => {
-		content += `<tr>
-						<th scope="row">${item.restAreaName}</th>
-						<td>${item.address}</td>
-						<td>${item.phoneNumber}</td>
-						<td>${item.amenities}</td>
-						<td>${item.createdAt}</td>
-						<td>${item.updatedAt}</td>
-					</tr>`;
-	});
-	$("tbody").html(content);
-	currentPage = page;
-}
-
-function renderPagination() {
-	let paginationHtml = '';
-	
-	const prevDisabled = currentPage === 1 ? 'disabled' : '';
-	paginationHtml += `
-		<li class="page-item ${prevDisabled}">
-			<a class="page-link" href="#" onclick="changePage(${currentPage - 1}, event)" aria-label="Previous">
-				<span aria-hidden="true">&laquo;</span>
-			</a>
-		</li>
-	`;
-
-	for (let i = 1; i <= totalPages; i++) {
-		const isActive = i === currentPage ? 'active' : '';
-		paginationHtml += `
-			<li class="page-item ${isActive}">
-				<a class="page-link" href="#" onclick="changePage(${i}, event)">
-					${i}
-				</a>
-			</li>
-		`;
-	}
-
-	const nextDisabled = currentPage === totalPages ? 'disabled' : '';
-	paginationHtml += `
-		<li class="page-item ${nextDisabled}">
-			<a class="page-link" href="#" onclick="changePage(${currentPage + 1}, event)" aria-label="Next">
-				<span aria-hidden="true">&raquo;</span>
-			</a>
-		</li>
-	`;
-
-	$("#pagination-ul").html(paginationHtml);
-}
-
-function changePage(page, event) {
-	if (event) event.preventDefault(); 
-	if (page < 1 || page > totalPages || page === currentPage) return;
-
-	renderTable(page);
-	renderPagination();
-	
-	$('html, body').animate({
-		scrollTop: $("#wrap").offset().top
-	}, 300);
-}
-
-$(function () {
-	renderTable(1);
-	renderPagination();
-	
-	// '삭제하기' 버튼 관련 코드는 현재 칼럼 구조에서 제거되었으므로 주석 처리하거나 제거하는 것이 좋습니다.
-	// 만약 삭제 기능을 다시 추가하려면 테이블에 해당 칼럼을 추가해야 합니다.
-	/* $("tbody").on('click', '.delete-btn', function() {
-		const row = $(this).closest('tr');
-		const name = row.find('th:first').text(); 
-		console.log('삭제 버튼 클릭됨 (휴게소명):', name);
-	});
-	*/
-
-	$("#pagination-ul").on("mouseover", ".page-item", function() {
-    	$(this).addClass("page-item-hover");
-	}).on("mouseout", ".page-item", function() {
-    	$(this).removeClass("page-item-hover");
-	});
-	
-	$("#top button").attr("class", "btn btn-primary");
-});
+	function searchRestarea() {
+		if ($("#keyword").val().trim() != null && $("#keyword").val().trim() != "") {
+			$("#restareaSearchFrm").submit();
+		}// end if
+	}// searchRestarea
 </script>
 </head>
 <body>
@@ -232,40 +159,108 @@ $(function () {
 						<span>휴게소 관리</span>
 					</h1>
 				</div>
+				<jsp:useBean id="rDTO" class="kr.co.sist.restarea.RangeDTO"
+					scope="page"></jsp:useBean>
+				<jsp:setProperty property="*" name="rDTO" />
+				<%
+				RestareaManageService rms = RestareaManageService.getInstance();
+
+				int totalCnt = rms.searchTotalCnt(rDTO);
+
+				int pageScale = rms.pageScale();
+
+				int totalPage = rms.totalPage(totalCnt, pageScale);
+
+				String tempPage = request.getParameter("currentPage");
+
+				int currentPage = 1;
+				if (tempPage != null) {
+					try {
+						currentPage = Integer.parseInt(tempPage);
+					} catch (NumberFormatException nfe) {
+						nfe.printStackTrace();
+					} // end catch
+				} // end if
+
+				int startNum = rms.startNum(currentPage, pageScale);
+
+				int endNum = rms.endNum(startNum, pageScale);
+
+				rDTO.setStartNum(startNum);
+				rDTO.setEndNum(endNum);
+				rDTO.setUrl("restarea_list.jsp");
+				rDTO.setTotalPage(totalPage);
+
+				List<RestareaManageDTO> restareaList = rms.searchRestareaList(rDTO);
+
+				String pagination = rms.pagination(rDTO);
+
+				pageContext.setAttribute("totalCnt", totalCnt);
+				pageContext.setAttribute("pageScale", pageScale);
+				pageContext.setAttribute("totalPage", totalPage);
+				pageContext.setAttribute("currentPage", currentPage);
+				pageContext.setAttribute("startNum", startNum);
+				pageContext.setAttribute("endNum", endNum);
+				pageContext.setAttribute("restareaList", restareaList);
+				pageContext.setAttribute("pagination", pagination);
+				%>
 				<div id="wrap">
 					<div id="top">
-					<div id="top-left">
-				<button>휴게소 추가</button>
-			</div>
-			<div id="top-right">
-				<div id="search">
-					<i class="fa-solid fa-magnifying-glass"></i> <input type="text"
-						placeholder="Search">
-				</div>
-				<button>검색</button>
-			</div>
+						<div id="top-left">
+							<button
+								onclick="location.href='restarea_write.jsp?currentPage=${ currentPage }'"
+								class="btn btn-primary">휴게소 추가</button>
+						</div>
+							<div id="top-right">
+							<form action="restarea_list.jsp" id="restareaSearchFrm">
+								<div id="search">
+									<i class="fa-solid fa-magnifying-glass"></i> <input type="text"
+										placeholder="휴게소명" name="keyword" id="keyword">
+								</div>
+								<input type="text" style="display: none"> <input
+									type="button" value="검색" id="btnSearch" class="btn btn-primary">
+							</form>
+						</div>
 					</div>
 					<div id="middle">
-						<table class="table table-striped">
-			<thead>
-				<tr>
-					<th scope="col" style="width: 15%">휴게소명</th>
-					<th scope="col" style="width: 20%">주소</th>
-					<th scope="col" style="width: 15%">전화번호</th>
-					<th scope="col" style="width: 20%">편의시설</th>
-					<th scope="col" style="width: 15%">생성일</th>
-					<th scope="col" style="width: 15%">수정일</th>
-				</tr>
-			</thead>
-			<tbody>
-			</tbody>
-		</table>
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th scope="col" style="width: 20%">휴게소명</th>
+									<th scope="col" style="width: 15%">노선</th>
+									<th scope="col" style="width: 15%">전화번호</th>
+									<th scope="col" style="width: 25%">주소</th>
+									<th scope="col" style="width: 12.5%">생성일</th>
+									<th scope="col" style="width: 12.5%">최근 수정일</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:if test="${ empty restareaList }">
+									<tr>
+										<td colspan="5" style="text-align: center;">등록된 휴게소가
+											없습니다.</td>
+									</tr>
+								</c:if>
+								<c:forEach var="rmDTO" items="${ restareaList }" varStatus="i">
+									<tr style="cursor: pointer;"
+										onclick="location.href='restarea_modify.jsp?currentPage=${ currentPage }&code=${ rmDTO.restareaCode }'">
+										<td><c:out value="${ rmDTO.name }"></c:out></td>
+										<td><c:out value="${ rmDTO.line }"></c:out></td>
+										<td><c:out value="${ rmDTO.restareaTel }"></c:out></td>
+										<td><c:out value="${ rmDTO.address }"></c:out></td>
+										<td><c:out value="${ rmDTO.addDate }"></c:out></td>
+										<td><c:out value="${ rmDTO.updateDate }"></c:out></td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
 					</div>
 					<div id="bottom">
 						<nav aria-label="Page navigation example">
-			<ul class="pagination" id="pagination-ul">
-			</ul>
-		</nav>
+							<ul class="pagination" id="pagination-ul">
+								<c:out value="${ pagination }" escapeXml="false"></c:out>
+							</ul>
+						</nav>
 					</div>
 				</div>
 			</main>

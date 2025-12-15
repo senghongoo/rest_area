@@ -19,7 +19,7 @@ pageContext.setAttribute("flag", flag);
 <script type="text/javascript">
 <c:choose>
 <c:when test="${ flag }">
-	var msg="회원 삭제 성공";
+	var msg="회원을 삭제했습니다.";
 	alert(msg);
 	location.href="member_list.jsp?currentPage=${ param.currentPage }";
 </c:when>

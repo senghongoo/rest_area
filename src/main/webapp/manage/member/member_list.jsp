@@ -1,6 +1,6 @@
-<%@page import="kr.co.sist.member.MemberService"%>
-<%@page import="kr.co.sist.member.MemberManageDTO"%>
-<%@page import="java.util.List"%>
+<%@ page import="kr.co.sist.member.MemberService"%>
+<%@ page import="kr.co.sist.member.MemberManageDTO"%>
+<%@ page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
@@ -79,16 +79,16 @@ th, td {
 			$(this).addClass("page-item-hover");
 		}).on("mouseout", ".page-item", function() {
 			$(this).removeClass("page-item-hover");
-		});
+		});// on
 	});// ready
 
 	function rmMember(id) {
-		if (confirm("해당 회원을 삭제하시겠습니까?")) {
+		if (confirm(id+" 회원을 삭제하시겠습니까?")) {
 			$("#id").val(id);
 
 			$("#frm")[0].action = "removeMemberProcess.jsp";
 			$("#frm").submit();
-		}//end if
+		}// end if
 	};// rmMember
 </script>
 </head>
@@ -173,7 +173,7 @@ th, td {
 									</tr>
 								</c:if>
 								<c:forEach var="mmDTO" items="${ memberList }" varStatus="i">
-									<tr style="cursor: pointer;" onclick="location.href='member_detail.jsp?id=${ mmDTO.id }'">
+									<tr style="cursor: pointer;" onclick="location.href='member_detail.jsp?currentPage=${ currentPage }&id=${ mmDTO.id }'">
 										<td><c:out
 												value="${ totalCnt - (currentPage-1) * pageScale - i.index }"></c:out></td>
 										<td><c:out value="${ mmDTO.id }"></c:out></td>
