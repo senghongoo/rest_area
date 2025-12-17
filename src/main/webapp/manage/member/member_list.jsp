@@ -88,7 +88,6 @@ th, td {
 			$("#currentPage").val(currentPage);
 			$("#totalCnt").val(totalCnt);
 
-			$("#frm")[0].action = "removeMemberProcess.jsp";
 			$("#frm").submit();
 		}// end if
 	};// rmMember

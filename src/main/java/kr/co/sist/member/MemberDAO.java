@@ -162,7 +162,7 @@ public class MemberDAO {
 			StringBuilder updateOneMember = new StringBuilder();
 			updateOneMember
 			.append("	update user_info      ")
-			.append("	set delete_flag = 'y' ")
+			.append("	set delete_flag = 'Y' ")
 			.append("	where user_id = ?     ");
 			
 			pstmt = con.prepareStatement(updateOneMember.toString());

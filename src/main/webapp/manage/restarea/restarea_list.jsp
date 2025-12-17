@@ -241,7 +241,7 @@ td {
 								</c:if>
 								<c:forEach var="rmDTO" items="${ restareaList }" varStatus="i">
 									<tr style="cursor: pointer;"
-										onclick="location.href='restarea_modify.jsp?currentPage=${ currentPage }&code=${ rmDTO.restareaCode }'">
+										onclick="location.href='restarea_detail.jsp?currentPage=${ currentPage }&code=${ rmDTO.restareaCode }'">
 										<td><c:out value="${ rmDTO.name }"></c:out></td>
 										<td><c:out value="${ rmDTO.line }"></c:out></td>
 										<td><c:out value="${ rmDTO.restareaTel }"></c:out></td>

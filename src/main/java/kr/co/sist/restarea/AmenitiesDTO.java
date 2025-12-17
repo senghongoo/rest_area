@@ -3,7 +3,14 @@ package kr.co.sist.restarea;
 public class AmenitiesDTO {
 
 	private int restareaCode;
-	private String sleepingRoom, showerRoom, restHub, nursingRoom, pharmacy, agricultureMarket, carWash, carRepair;
+	private String sleepingRoom = "N";
+	private String showerRoom = "N";
+	private String restHub = "N";
+	private String nursingRoom = "N";
+	private String pharmacy = "N";
+	private String agricultureMarket = "N";
+	private String carWash = "N";
+	private String carRepair = "N";
 
 	public AmenitiesDTO() {
 		super();
