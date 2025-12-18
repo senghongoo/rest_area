@@ -77,12 +77,12 @@ public class RestareaUpdateService {
 
 			RestareaUpdateDAO ruDAO = RestareaUpdateDAO.getInstance();
 
-			int modifyADTOResult = 0;
 			int modifyRdDTOResult = 0;
+			int modifyADTOResult = 0;
 			int modifyEfDTOResult = 0;
 
-			modifyADTOResult = ruDAO.updateAmenities(restareaCode, aDTO);
 			modifyRdDTOResult = ruDAO.updateRestareaDetail(restareaCode, rdDTO);
+			modifyADTOResult = ruDAO.updateAmenities(restareaCode, aDTO);
 
 			ruDAO.deleteExtraFacilities(restareaCode);
 
@@ -90,8 +90,9 @@ public class RestareaUpdateService {
 				modifyEfDTOResult += ruDAO.insertExtraFacilities(restareaCode, efDTO);
 			} // end for
 
-			if (modifyADTOResult == 1 && modifyRdDTOResult == 1 && modifyEfDTOResult == efDTOList.size()) {
+			if (modifyRdDTOResult == 1 && modifyADTOResult == 1 && modifyEfDTOResult == efDTOList.size()) {
 				con.commit();
+				flag = true;
 			} else {
 				con.rollback();
 			} // end if

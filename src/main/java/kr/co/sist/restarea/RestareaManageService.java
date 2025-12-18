@@ -3,8 +3,6 @@ package kr.co.sist.restarea;
 import java.sql.SQLException;
 import java.util.List;
 
-import kr.co.sist.restarea.RangeDTO;
-
 public class RestareaManageService {
 
 	private static RestareaManageService rms;

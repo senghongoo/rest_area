@@ -49,19 +49,20 @@ public class RestareaCreateService {
 
 			RestareaCreateDAO rcDAO = RestareaCreateDAO.getInstance();
 
-			int addADTOResult = 0;
 			int addRdDTOResult = 0;
+			int addADTOResult = 0;
 			int addEfDTOResult = 0;
 
-			addADTOResult = rcDAO.insertAmenities(restareaCode, aDTO);
 			addRdDTOResult = rcDAO.insertRestareaDetail(restareaCode, rdDTO);
+			addADTOResult = rcDAO.insertAmenities(restareaCode, aDTO);
 
 			for (ExtraFacilitiesDTO efDTO : efDTOList) {
 				addEfDTOResult += rcDAO.insertExtraFacilities(restareaCode, efDTO);
 			} // end for
 
-			if (addADTOResult == 1 && addRdDTOResult == 1 && addEfDTOResult == efDTOList.size()) {
+			if (addRdDTOResult == 1 && addADTOResult == 1 && addEfDTOResult == efDTOList.size()) {
 				con.commit();
+				flag = true;
 			} else {
 				con.rollback();
 			} // end if

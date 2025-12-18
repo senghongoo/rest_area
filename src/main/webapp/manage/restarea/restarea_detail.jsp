@@ -1,10 +1,17 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<% request.setCharacterEncoding("UTF-8"); %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page import="kr.co.sist.restarea.RestareaUpdateService"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+
+<%
+request.setCharacterEncoding("UTF-8");
+%>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%-- <c:if test="${empty date}">
   <c:redirect url="http://192.168.10.89/team_second_prj/admin/login/login_main.jsp"/>
 </c:if> --%>
+
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
 <head>
@@ -14,14 +21,23 @@
 <title>휴게소 관리 - 휴게소 수정 및 삭제</title>
 
 <!-- bootstrap CDN 시작 -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+	rel="stylesheet"
+	integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+	crossorigin="anonymous">
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+	crossorigin="anonymous"></script>
 
-<!-- 링크 수정 필요 -->
-<link href="https://getbootstrap.com/docs/5.3/examples/dashboard/dashboard.css" rel="stylesheet">
+<link
+	href="https://getbootstrap.com/docs/5.3/examples/dashboard/dashboard.css"
+	rel="stylesheet">
 
 <!-- jQuery -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 <jsp:include page="../template/admin_style_css.jsp" />
 
@@ -61,7 +77,6 @@ input:not(span>input) {
 }
 
 .form-select {
-	width: 183px;
 	margin-top: 2px;
 }
 
@@ -75,7 +90,7 @@ input:not(span>input) {
 }
 
 #flag span {
-	margin-right: 40px;
+	margin: 0 30px;
 }
 
 #flag label {
@@ -115,15 +130,229 @@ input:not(span>input) {
 	width: 30px;
 	height: 30px;
 }
+
+.frm1 input, .frm1 select {
+	width: 80%;
+}
 </style>
+
 <script type="text/javascript">
 	$(function() {
-		$(".frm2 td:nth-of-type(2)").attr("colspan", 3);
-		$(".pic > button, #btns > button").attr("class", "btn btn-primary");
-		$("#btns > button:nth-of-type(1)").attr("class", "btn btn-danger");
-		$(".extra > div button").attr("class", "btn btn-light");
-		$("table").attr("class", "table");
+		function applyStyles() {
+			$(".frm2 td:nth-of-type(2)").attr("colspan", 3);
+			$(".pic > button, #btns > button").addClass("btn btn-primary");
+			$(".extra > div button").addClass("btn btn-light");
+			$("table").addClass("table");
+			$("table").attr("style", "margin-bottom: 0px !important;");
+		}// applyStyles
+
+		applyStyles();
+
+		$(document).on("click", ".btnUpload", function() {
+			$(this).siblings(".upfile").click();
+		});// click
+
+		$(document).on("change", ".upfile", function(evt) {
+			var file = evt.target.files[0];
+
+			if (!file) {
+				return;
+			}// end if
+
+			var reader = new FileReader();
+			var inputText = $(this).siblings("input[type='text']");
+
+			reader.onload = function(evt) {
+				inputText.val(file.name);
+			};
+
+			reader.readAsDataURL(file);
+		});// change
+
+		var fac1Index = 1;
+		var fac2Index = 1;
+		var fac3Index = 1;
+
+		$(document)
+				.on(
+						"click",
+						"#addFac1",
+						function() {
+							var newTable = '<table>'
+									+ '  <tr class="frm2">'
+									+ '    <td><label>볼거리명</label></td>'
+									+ '    <td><input type="text" name="fac1Name_' + fac1Index + '"></td>'
+									+ '    <td rowspan="3"><input type="checkbox" class="removeFlag"></td>'
+									+ '  </tr>'
+									+
+
+									'  <tr>'
+									+ '    <td><label>볼거리 사진</label></td>'
+									+ '    <td class="pic">'
+									+ '      <label>800x500 / png, jpg 가능</label>'
+									+ '      <input type="text" placeholder="첨부 파일" disabled="disabled">'
+									+ '      <input type="file" accept="image/*" name="fac1Img_' + fac1Index + '" class="upfile" style="display:none;">'
+									+ '      <button type="button" class="btnUpload">파일 첨부</button>'
+									+ '    </td>'
+									+ '  </tr>'
+									+
+
+									'  <tr class="frm2">'
+									+ '    <td><label>볼거리 문구</label></td>'
+									+ '    <td><input type="text" name="fac1Phrase_' + fac1Index + '"></td>'
+									+ '  </tr>' + '</table>';
+
+							$("#fac1").append(newTable);
+							applyStyles();
+							fac1Index++;
+						});// click
+
+		$(document)
+				.on(
+						"click",
+						"#addFac2",
+						function() {
+							var newTable = '<table>'
+									+ '  <tr class="frm2">'
+									+ '    <td><label>먹거리명</label></td>'
+									+ '    <td><input type="text" name="fac2Name_' + fac2Index + '"></td>'
+									+ '    <td rowspan="3"><input type="checkbox" class="removeFlag"></td>'
+									+ '  </tr>'
+									+
+
+									'  <tr>'
+									+ '    <td><label>먹거리 사진</label></td>'
+									+ '    <td class="pic">'
+									+ '      <label>800x500 / png, jpg 가능</label>'
+									+ '      <input type="text" placeholder="첨부 파일" disabled="disabled">'
+									+ '      <input type="file" accept="image/*" name="fac2Img_' + fac2Index + '" class="upfile" style="display:none;">'
+									+ '      <button type="button" class="btnUpload">파일 첨부</button>'
+									+ '    </td>'
+									+ '  </tr>'
+									+
+
+									'  <tr class="frm2">'
+									+ '    <td><label>먹거리 문구</label></td>'
+									+ '    <td><input type="text" name="fac2Phrase_' + fac2Index + '"></td>'
+									+ '  </tr>' + '</table>';
+
+							$("#fac2").append(newTable);
+							applyStyles();
+							fac2Index++;
+						});// click
+
+		$(document)
+				.on(
+						"click",
+						"#addFac3",
+						function() {
+							var newTable = '<table>'
+									+ '  <tr class="frm2">'
+									+ '    <td><label>편의시설명</label></td>'
+									+ '    <td><input type="text" name="fac3Name_' + fac3Index + '"></td>'
+									+ '    <td rowspan="3"><input type="checkbox" class="removeFlag"></td>'
+									+ '  </tr>'
+									+
+
+									'  <tr>'
+									+ '    <td><label>편의시설 사진</label></td>'
+									+ '    <td class="pic">'
+									+ '      <label>800x500 / png, jpg 가능</label>'
+									+ '      <input type="text" placeholder="첨부 파일" disabled="disabled">'
+									+ '      <input type="file" accept="image/*" name="fac3Img_' + fac3Index + '" class="upfile" style="display:none;">'
+									+ '      <button type="button" class="btnUpload">파일 첨부</button>'
+									+ '    </td>'
+									+ '  </tr>'
+									+
+
+									'  <tr class="frm2">'
+									+ '    <td><label>편의시설 문구</label></td>'
+									+ '    <td><input type="text" name="fac3Phrase_' + fac3Index + '"></td>'
+									+ '  </tr>' + '</table>';
+
+							$("#fac3").append(newTable);
+							applyStyles();
+							fac3Index++;
+						});// click
+
+		$(document).on("click", ".removeItem", function() {
+			var closestDiv = $(this).closest("div");
+			var siblingTables = closestDiv.siblings("table");
+
+			if (confirm("선택 항목을 삭제하시겠습니까?")) {
+				var checkedCnt = siblingTables.filter(function() {
+					return $(this).find(".removeFlag").is(":checked");
+				}).length;
+
+				if (checkedCnt >= siblingTables.length) {
+					alert("최소 1개의 항목은 필수 입력입니다.");
+					siblingTables.find(".removeFlag").prop("checked", false);
+					return;
+				}// end if
+
+				siblingTables.each(function() {
+					var $table = $(this);
+					var $checkbox = $table.find(".removeFlag");
+
+					if ($checkbox.is(":checked")) {
+						$table.remove();
+					}// end if
+				});
+			}// end if
+		});// click
 	});// ready
+	
+	function rmRestarea(code, currentPage, keyword) {
+		if (confirm("휴게소를 삭제하시겠습니까?")) {
+			$("#code").val(code);
+			$("#currentPage").val(currentPage);
+			$("#keyword").val(keyword);
+			
+			$("#removeFrm").submit();
+		}// end if
+	};// rmRestarea
+
+	function modifyRestarea() {
+		if (confirm("휴게소를 수정하시겠습니까?")) {
+			var isValid = true;
+
+			// 1. text input 유효성 검증
+			$("input[type='text']").not(":disabled").each(function() {
+				if ($(this).val().trim() === "") {
+					alert("모든 항목을 입력해주세요.");
+					isValid = false;
+					return false;
+				}// end if
+			});
+
+			if (!isValid) {
+				return;
+			}// end if
+
+			// 2. select 유효성 검증
+			if ($("select").val() === "") {
+				alert("노선을 선택해주세요.");
+				return;
+			}// end if
+
+			// 3. 파일 첨부 유효성 검증
+			$(".upfile").each(function() {
+				if (this.files.length === 0) {
+					alert("이미지 파일을 첨부해주세요.");
+					isValid = false;
+					return false;
+				}// end if
+			});
+
+			if (!isValid) {
+				return;
+			}// end if
+
+			$("#amenities input[type='checkbox']:checked").val("Y");
+
+			$("#modifyFrm").submit();
+		}// end if
+	}// modifyRestarea
 </script>
 </head>
 <body>
@@ -140,146 +369,183 @@ input:not(span>input) {
 				</div>
 				<div id="wrap">
 					<div id="top"></div>
-					<div id="middle">
-						<div>
-							<div id="table1">
-								<table>
-									<tr class="frm1">
-										<td style="width: 200px;"><label>휴게소명</label></td>
-										<td style="width: 300px;"><input type="text"></td>
-										<td style="width: 200px;"><label>노선</label></td>
-										<td style="width: 300px;"><select class="form-select">
-												<option value="강릉선">강릉선</option>
-												<option value="경부선">경부선</option>
-												<option value="용서선">용서선</option>
-												<option value="목포선">목포선</option>
-												<option value="진주선">진주선</option>
-										</select></td>
-									</tr>
-									<tr class="frm2">
-										<td><label>타이틀 사진</label></td>
-										<td class="pic"><label>1440x500 / png, jpg 가능</label><input
-											type="text" placeholder="첨부 파일" disabled="disabled">
-											<button>파일 첨부</button></td>
-									</tr>
-									<tr class="frm2">
-										<td><label>타이틀 문구</label></td>
-										<td><input type="text"></td>
-									</tr>
-									<tr class="frm2">
-										<td><label>주소</label></td>
-										<td><input type="text"></td>
-									</tr>
-									<tr class="frm1">
-										<td><label>위도</label></td>
-										<td><input type="text"></td>
-										<td><label>경도</label></td>
-										<td><input type="text"></td>
-									</tr>
-									<tr class="frm1">
-										<td><label>휴게소 연락처</label></td>
-										<td><input type="text"></td>
-										<td><label>주유소 연락처</label></td>
-										<td><input type="text"></td>
-									</tr>
-									<tr class="frm1">
-										<td><label>대표 음식</label></td>
-										<td><input type="text"></td>
-										<td><label>주차장 규모</label></td>
-										<td><input type="text"></td>
-									</tr>
-									<tr>
-										<td colspan="4" id="flag"><span><label>수면실</label><input
-												type="checkbox"></span> <span><label>샤워실</label><input
-												type="checkbox"></span> <span><label>쉼터</label><input
-												type="checkbox"></span> <span><label>수유실</label><input
-												type="checkbox"></span> <span><label>약국</label><input
-												type="checkbox"></span> <span><label>농산물판매장</label><input
-												type="checkbox"></span> <span><label>세차장</label><input
-												type="checkbox"></span> <span><label>경정비소</label><input
-												type="checkbox"></span></td>
-									</tr>
-								</table>
-							</div>
-							<div class="extra">
-								<div>
-									<label>볼거리 리스트</label> <span><button>항목 추가</button>
-										<button>선택 항목 삭제</button></span>
+					<form action="addRestareaProcess.jsp" method="post"
+						enctype="multipart/form-data" id="modifyFrm">
+						<div id="middle">
+							<div>
+								<div id="table1">
+									<table>
+										<tr class="frm1">
+											<td style="width: 200px;"><label>휴게소명</label></td>
+											<td style="width: 300px;"><input type="text"
+												name="titleName"></td>
+											<td style="width: 200px;"><label>노선</label></td>
+											<td style="width: 300px;"><select class="form-select"
+												name="line">
+													<option value="">노선을 선택해주세요.</option>
+													<option value="경부고속도로">경부고속도로</option>
+													<option value="서해안고속도로">서해안고속도로</option>
+													<option value="영동고속도로">영동고속도로</option>
+													<option value="중부고속도로">중부고속도로</option>
+													<option value="서울양양고속도로">서울양양고속도로</option>
+											</select></td>
+										</tr>
+										<tr class="frm2">
+											<td><label>타이틀 사진</label></td>
+											<td class="pic"><label>1440x500 / png, jpg 가능</label> <input
+												type="text" placeholder="첨부 파일" disabled="disabled">
+												<input type="file" accept="image/*" name="titleImg"
+												class="upfile" style="display: none" />
+												<button type="button" class="btnUpload">파일 첨부</button></td>
+										</tr>
+										<tr class="frm2">
+											<td><label>타이틀 문구</label></td>
+											<td><input type="text" name="titlePhrase"></td>
+										</tr>
+										<tr class="frm2">
+											<td><label>주소</label></td>
+											<td><input type="text" name="address"></td>
+										</tr>
+										<tr class="frm1">
+											<td><label>위도</label></td>
+											<td><input type="text" name="latitude"></td>
+											<td><label>경도</label></td>
+											<td><input type="text" name="longitude"></td>
+										</tr>
+										<tr class="frm1">
+											<td><label>휴게소 연락처</label></td>
+											<td><input type="text" name="restareaTel"></td>
+											<td><label>주유소 연락처</label></td>
+											<td><input type="text" name="gasstationTel"></td>
+										</tr>
+										<tr class="frm1">
+											<td><label>대표 음식</label></td>
+											<td><input type="text" name="famousFood"></td>
+											<td><label>주차장 규모</label></td>
+											<td><input type="text" name="parkingScale"></td>
+										</tr>
+										<tr id="amenities">
+											<td><label>부가시설</label></td>
+											<td colspan="3" id="flag"><span style="margin-left: 0"><label>수면실</label><input
+													type="checkbox" name="sleepingRoom"></span> <span><label>샤워실</label><input
+													type="checkbox" name="showerRoom"></span> <span><label>쉼터</label><input
+													type="checkbox" name="restHub"></span> <span><label>수유실</label><input
+													type="checkbox" name="nursingRoom"></span> <span><label>약국</label><input
+													type="checkbox" name="pharmacy"></span> <span><label>농산물판매장</label><input
+													type="checkbox" name="agricultureMarket"></span> <span><label>세차장</label><input
+													type="checkbox" name="carWash"></span> <span><label>경정비소</label><input
+													type="checkbox" name="carRepair"></span></td>
+										</tr>
+									</table>
 								</div>
-								<table>
-									<tr class="frm2">
-										<td><label>볼거리명</label></td>
-										<td><input type="text"></td>
-										<td rowspan="3"><input type="checkbox"></td>
-									</tr>
-									<tr>
-										<td><label>볼거리 사진</label></td>
-										<td class="pic"><label>800x500 / png, jpg 가능</label><input
-											type="text" placeholder="첨부 파일" disabled="disabled">
-											<button>파일 첨부</button></td>
-									</tr>
-									<tr class="frm2">
-										<td><label>볼거리 문구</label></td>
-										<td><input type="text"></td>
-									</tr>
-								</table>
-							</div>
-							<div class="extra">
-								<div>
-									<label>먹거리 리스트</label> <span><button>항목 추가</button>
-										<button>선택 항목 삭제</button></span>
+								<div class="extra" id="fac1">
+									<div>
+										<label>볼거리 리스트</label> <span>
+											<button type="button" class="addItem" id="addFac1">항목
+												추가</button>
+											<button type="button" class="removeItem">선택 항목 삭제</button>
+										</span>
+									</div>
+									<table>
+										<tr class="frm2">
+											<td><label>볼거리명</label></td>
+											<td><input type="text" name="fac1Name_0"></td>
+											<td rowspan="3"><input type="checkbox"
+												class="removeFlag"></td>
+										</tr>
+										<tr>
+											<td><label>볼거리 사진</label></td>
+											<td class="pic"><label>800x500 / png, jpg 가능</label> <input
+												type="text" placeholder="첨부 파일" disabled="disabled">
+												<input type="file" accept="image/*" name="fac1Img_0"
+												class="upfile" style="display: none" />
+												<button type="button" class="btnUpload">파일 첨부</button></td>
+										</tr>
+										<tr class="frm2">
+											<td><label>볼거리 문구</label></td>
+											<td><input type="text" name="fac1Phrase_0"></td>
+										</tr>
+									</table>
 								</div>
-								<table>
-									<tr class="frm2">
-										<td><label>먹거리명</label></td>
-										<td><input type="text"></td>
-										<td rowspan="3"><input type="checkbox"></td>
-									</tr>
-									<tr>
-										<td><label>먹거리 사진</label></td>
-										<td class="pic"><label>800x500 / png, jpg 가능</label><input
-											type="text" placeholder="첨부 파일" disabled="disabled">
-											<button>파일 첨부</button></td>
-									</tr>
-									<tr class="frm2">
-										<td><label>먹거리 문구</label></td>
-										<td><input type="text"></td>
-									</tr>
-								</table>
-							</div>
-							<div class="extra">
-								<div>
-									<label>편의시설 리스트</label> <span><button>항목 추가</button>
-										<button>선택 항목 삭제</button></span>
+								<div class="extra" id="fac2">
+									<div>
+										<label>먹거리 리스트</label> <span>
+											<button type="button" class="addItem" id="addFac2">항목
+												추가</button>
+											<button type="button" class="removeItem">선택 항목 삭제</button>
+										</span>
+									</div>
+									<table>
+										<tr class="frm2">
+											<td><label>먹거리명</label></td>
+											<td><input type="text" name="fac2Name_0"></td>
+											<td rowspan="3"><input type="checkbox"
+												class="removeFlag"></td>
+										</tr>
+										<tr>
+											<td><label>먹거리 사진</label></td>
+											<td class="pic"><label>800x500 / png, jpg 가능</label> <input
+												type="text" placeholder="첨부 파일" disabled="disabled">
+												<input type="file" accept="image/*" name="fac2Img_0"
+												class="upfile" style="display: none" />
+												<button type="button" class="btnUpload">파일 첨부</button></td>
+										</tr>
+										<tr class="frm2">
+											<td><label>먹거리 문구</label></td>
+											<td><input type="text" name="fac2Phrase_0"></td>
+										</tr>
+									</table>
 								</div>
-								<table>
-									<tr class="frm2">
-										<td><label>편의시설명</label></td>
-										<td><input type="text"></td>
-										<td rowspan="3"><input type="checkbox"></td>
-									</tr>
-									<tr>
-										<td><label>편의시설 사진</label></td>
-										<td class="pic"><label>800x500 / png, jpg 가능</label><input
-											type="text" placeholder="첨부 파일" disabled="disabled">
-											<button>파일 첨부</button></td>
-									</tr>
-									<tr class="frm2">
-										<td><label>편의시설 문구</label></td>
-										<td><input type="text"></td>
-									</tr>
-								</table>
+								<div class="extra" id="fac3">
+									<div>
+										<label>편의시설 리스트</label> <span>
+											<button type="button" class="addItem" id="addFac3">항목
+												추가</button>
+											<button type="button" class="removeItem">선택 항목 삭제</button>
+										</span>
+									</div>
+									<table>
+										<tr class="frm2">
+											<td><label>편의시설명</label></td>
+											<td><input type="text" name="fac3Name_0"></td>
+											<td rowspan="3"><input type="checkbox"
+												class="removeFlag"></td>
+										</tr>
+										<tr>
+											<td><label>편의시설 사진</label></td>
+											<td class="pic"><label>800x500 / png, jpg 가능</label> <input
+												type="text" placeholder="첨부 파일" disabled="disabled">
+												<input type="file" accept="image/*" name="fac3Img_0"
+												class="upfile" style="display: none" />
+												<button type="button" class="btnUpload">파일 첨부</button></td>
+										</tr>
+										<tr class="frm2">
+											<td><label>편의시설 문구</label></td>
+											<td><input type="text" name="fac3Phrase_0"></td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<div id="bottom">
+								<div style="float: right; margin-bottom: 20px; margin-top: 16px"
+									id="btns">
+									<input type="button" value="삭제" id="btnDelete"
+											class="btn btn-danger" onclick="event.stopPropagation(); rmRestarea(${ param.code }, ${ param.currentPage }, '${ param.keyword }')" />
+									<button type="button"
+										onclick="location.href='restarea_list.jsp?currentPage=${ param.currentPage }&keyword=${ param.keyword }'">취소</button>
+									<button type="button">미리보기</button>
+									<input type="button" value="수정" id="btnUpdate"
+										class="btn btn-primary"
+										onclick="event.stopPropagation(); modifyRestarea()" />
+								</div>
 							</div>
 						</div>
-						<div id="bottom">
-							<div style="float: right; margin-bottom: 20px" id="btns">
-								<button class="btn btn-danger">삭제</button>
-								<button>취소</button>
-								<button>미리보기</button>
-								<button>수정</button>
-							</div>
-						</div>
-					</div>
+					</form>
+					<form action="removeRestareaProcess.jsp" id="removeFrm">
+						<input type="hidden" name="code" id="code" style="display: none" />
+						<input type="hidden" name="currentPage" id="currentPage" style="display: none" />
+						<input type="hidden" name="keyword" id="keyword" style="display: none" />
+					</form>
 				</div>
 			</main>
 		</div>

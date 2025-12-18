@@ -137,45 +137,144 @@ input:not(span>input) {
 
 <script type="text/javascript">
 	$(function() {
-		$(".frm2 td:nth-of-type(2)").attr("colspan", 3);
-		$(".pic > button, #btns > button").addClass("btn btn-primary");
-		$(".extra > div button").addClass("btn btn-light");
-		$("table").addClass("table");
-		$("table").attr("style", "margin-bottom: 0px !important;");
+		function applyStyles() {
+			$(".frm2 td:nth-of-type(2)").attr("colspan", 3);
+			$(".pic > button, #btns > button").addClass("btn btn-primary");
+			$(".extra > div button").addClass("btn btn-light");
+			$("table").addClass("table");
+			$("table").attr("style", "margin-bottom: 0px !important;");
+		}// applyStyles
 
-	    $(document).on("click", ".btnUpload", function() {
-	        $(this).siblings(".upfile").click();
-	    });// click
+		applyStyles();
 
-	    $(document).on("change", ".upfile", function(evt) {
-	        var file = evt.target.files[0];
-
-	        if (!file) {
-	            return;
-	        }
-
-	        var reader = new FileReader();
-	        var $inputText = $(this).siblings("input[type='text']");
-
-	        reader.onload = function(evt) {
-	            $inputText.val(file.name);
-	        };
-
-	        reader.readAsDataURL(file);
-	    });// change
-
-		$(".addItem").click(function() {
-			var closestDiv = $(this).closest("div");
-			var siblingTable = closestDiv.siblings("table").first();
-			var clonedTable = siblingTable.clone();
-
-			clonedTable.find("input").val("");
-			clonedTable.find("input[type='checkbox']").prop("checked", false);
-
-			closestDiv.parent().append(clonedTable);
+		$(document).on("click", ".btnUpload", function() {
+			$(this).siblings(".upfile").click();
 		});// click
 
-		$(".removeItem").click(function() {
+		$(document).on("change", ".upfile", function(evt) {
+			var file = evt.target.files[0];
+
+			if (!file) {
+				return;
+			}// end if
+
+			var reader = new FileReader();
+			var inputText = $(this).siblings("input[type='text']");
+
+			reader.onload = function(evt) {
+				inputText.val(file.name);
+			};
+
+			reader.readAsDataURL(file);
+		});// change
+
+		var fac1Index = 1;
+		var fac2Index = 1;
+		var fac3Index = 1;
+
+		$(document)
+				.on(
+						"click",
+						"#addFac1",
+						function() {
+							var newTable = '<table>'
+									+ '  <tr class="frm2">'
+									+ '    <td><label>볼거리명</label></td>'
+									+ '    <td><input type="text" name="fac1Name_' + fac1Index + '"></td>'
+									+ '    <td rowspan="3"><input type="checkbox" class="removeFlag"></td>'
+									+ '  </tr>'
+									+
+
+									'  <tr>'
+									+ '    <td><label>볼거리 사진</label></td>'
+									+ '    <td class="pic">'
+									+ '      <label>800x500 / png, jpg 가능</label>'
+									+ '      <input type="text" placeholder="첨부 파일" disabled="disabled">'
+									+ '      <input type="file" accept="image/*" name="fac1Img_' + fac1Index + '" class="upfile" style="display:none;">'
+									+ '      <button type="button" class="btnUpload">파일 첨부</button>'
+									+ '    </td>'
+									+ '  </tr>'
+									+
+
+									'  <tr class="frm2">'
+									+ '    <td><label>볼거리 문구</label></td>'
+									+ '    <td><input type="text" name="fac1Phrase_' + fac1Index + '"></td>'
+									+ '  </tr>' + '</table>';
+
+							$("#fac1").append(newTable);
+							applyStyles();
+							fac1Index++;
+						});// click
+
+		$(document)
+				.on(
+						"click",
+						"#addFac2",
+						function() {
+							var newTable = '<table>'
+									+ '  <tr class="frm2">'
+									+ '    <td><label>먹거리명</label></td>'
+									+ '    <td><input type="text" name="fac2Name_' + fac2Index + '"></td>'
+									+ '    <td rowspan="3"><input type="checkbox" class="removeFlag"></td>'
+									+ '  </tr>'
+									+
+
+									'  <tr>'
+									+ '    <td><label>먹거리 사진</label></td>'
+									+ '    <td class="pic">'
+									+ '      <label>800x500 / png, jpg 가능</label>'
+									+ '      <input type="text" placeholder="첨부 파일" disabled="disabled">'
+									+ '      <input type="file" accept="image/*" name="fac2Img_' + fac2Index + '" class="upfile" style="display:none;">'
+									+ '      <button type="button" class="btnUpload">파일 첨부</button>'
+									+ '    </td>'
+									+ '  </tr>'
+									+
+
+									'  <tr class="frm2">'
+									+ '    <td><label>먹거리 문구</label></td>'
+									+ '    <td><input type="text" name="fac2Phrase_' + fac2Index + '"></td>'
+									+ '  </tr>' + '</table>';
+
+							$("#fac2").append(newTable);
+							applyStyles();
+							fac2Index++;
+						});// click
+
+		$(document)
+				.on(
+						"click",
+						"#addFac3",
+						function() {
+							var newTable = '<table>'
+									+ '  <tr class="frm2">'
+									+ '    <td><label>편의시설명</label></td>'
+									+ '    <td><input type="text" name="fac3Name_' + fac3Index + '"></td>'
+									+ '    <td rowspan="3"><input type="checkbox" class="removeFlag"></td>'
+									+ '  </tr>'
+									+
+
+									'  <tr>'
+									+ '    <td><label>편의시설 사진</label></td>'
+									+ '    <td class="pic">'
+									+ '      <label>800x500 / png, jpg 가능</label>'
+									+ '      <input type="text" placeholder="첨부 파일" disabled="disabled">'
+									+ '      <input type="file" accept="image/*" name="fac3Img_' + fac3Index + '" class="upfile" style="display:none;">'
+									+ '      <button type="button" class="btnUpload">파일 첨부</button>'
+									+ '    </td>'
+									+ '  </tr>'
+									+
+
+									'  <tr class="frm2">'
+									+ '    <td><label>편의시설 문구</label></td>'
+									+ '    <td><input type="text" name="fac3Phrase_' + fac3Index + '"></td>'
+									+ '  </tr>' + '</table>';
+
+							$("#fac3").append(newTable);
+							applyStyles();
+							fac3Index++;
+						});// click
+
+		$(document).on("click", ".removeItem", function() {
 			var closestDiv = $(this).closest("div");
 			var siblingTables = closestDiv.siblings("table");
 
@@ -202,6 +301,132 @@ input:not(span>input) {
 		});// click
 	});// ready
 
+	function previewListRestarea() {
+		var isValid = true;
+
+		// 1. text input 유효성 검증
+		$("input[type='text']").not(":disabled").each(function() {
+			if ($(this).val().trim() === "") {
+				alert("모든 항목을 입력해주세요.");
+				$(this).focus();
+				isValid = false;
+				return false;
+			}// end if
+		});
+
+		if (!isValid) {
+			return;
+		}// end if
+
+		// 2. 위도, 경도 유효성 검증
+		var latLonReg = /^-?(\d{1,3})(\.\d+)?$/;
+
+		var lat = $("input[name='latitude']").val().trim();
+		var lon = $("input[name='longitude']").val().trim();
+
+		if (!latLonReg.test(lat)) {
+			alert("위도는 숫자 형식으로 입력해주세요. (예: 37.1234)");
+			$("input[name='latitude']").focus();
+			return;
+		}// end if
+
+		if (!latLonReg.test(lon)) {
+			alert("경도는 숫자 형식으로 입력해주세요. (예: 127.1234)");
+			$("input[name='longitude']").focus();
+			return;
+		}// end if
+
+		// 3. select 유효성 검증
+		if ($("select").val() === "") {
+			alert("노선을 선택해주세요.");
+			$("select").focus();
+			return;
+		}// end if
+
+		// 4. 파일 첨부 유효성 검증
+		$(".upfile").each(function() {
+			if (this.files.length === 0) {
+				alert("이미지 파일을 첨부해주세요.");
+				$(this).siblings("button").focus();
+				isValid = false;
+				return false;
+			}// end if
+		});
+
+		if (!isValid) {
+			return;
+		}// end if
+
+		$("#amenities input[type='checkbox']:checked").val("Y");
+
+		$("#frm").prop("target", "_blank");
+		$("#frm").prop("action", "restarea_list_preview.jsp");
+		$("#frm").submit();
+	}// previewListRestarea
+	
+	function previewDetailRestarea() {
+		var isValid = true;
+
+		// 1. text input 유효성 검증
+		$("input[type='text']").not(":disabled").each(function() {
+			if ($(this).val().trim() === "") {
+				alert("모든 항목을 입력해주세요.");
+				$(this).focus();
+				isValid = false;
+				return false;
+			}// end if
+		});
+
+		if (!isValid) {
+			return;
+		}// end if
+
+		// 2. 위도, 경도 유효성 검증
+		var latLonReg = /^-?(\d{1,3})(\.\d+)?$/;
+
+		var lat = $("input[name='latitude']").val().trim();
+		var lon = $("input[name='longitude']").val().trim();
+
+		if (!latLonReg.test(lat)) {
+			alert("위도는 숫자 형식으로 입력해주세요. (예: 37.1234)");
+			$("input[name='latitude']").focus();
+			return;
+		}// end if
+
+		if (!latLonReg.test(lon)) {
+			alert("경도는 숫자 형식으로 입력해주세요. (예: 127.1234)");
+			$("input[name='longitude']").focus();
+			return;
+		}// end if
+
+		// 3. select 유효성 검증
+		if ($("select").val() === "") {
+			alert("노선을 선택해주세요.");
+			$("select").focus();
+			return;
+		}// end if
+
+		// 4. 파일 첨부 유효성 검증
+		$(".upfile").each(function() {
+			if (this.files.length === 0) {
+				alert("이미지 파일을 첨부해주세요.");
+				$(this).siblings("button").focus();
+				isValid = false;
+				return false;
+			}// end if
+		});
+
+		if (!isValid) {
+			return;
+		}// end if
+
+		$("#amenities input[type='checkbox']:checked").val("Y");
+
+		$("#frm").prop("target", "_blank");
+		$("#frm").prop("action", "restarea_detail_preview.jsp");
+		$("#frm").submit();
+	}// previewDetailRestarea
+
 	function addRestarea() {
 		if (confirm("휴게소를 추가하시겠습니까?")) {
 			var isValid = true;
@@ -210,6 +435,7 @@ input:not(span>input) {
 			$("input[type='text']").not(":disabled").each(function() {
 				if ($(this).val().trim() === "") {
 					alert("모든 항목을 입력해주세요.");
+					$(this).focus();
 					isValid = false;
 					return false;
 				}// end if
@@ -219,16 +445,36 @@ input:not(span>input) {
 				return;
 			}// end if
 
-			// 2. select 유효성 검증
-			if ($("select").val() === "") {
-				alert("노선을 선택해주세요.");
+			// 2. 위도, 경도 유효성 검증
+			var latLonReg = /^-?(\d{1,3})(\.\d+)?$/;
+
+			var lat = $("input[name='latitude']").val().trim();
+			var lon = $("input[name='longitude']").val().trim();
+
+			if (!latLonReg.test(lat)) {
+				alert("위도는 숫자 형식으로 입력해주세요. (예: 37.1234)");
+				$("input[name='latitude']").focus();
 				return;
 			}// end if
 
-			// 3. 파일 첨부 유효성 검증
+			if (!latLonReg.test(lon)) {
+				alert("경도는 숫자 형식으로 입력해주세요. (예: 127.1234)");
+				$("input[name='longitude']").focus();
+				return;
+			}// end if
+
+			// 3. select 유효성 검증
+			if ($("select").val() === "") {
+				alert("노선을 선택해주세요.");
+				$("select").focus();
+				return;
+			}// end if
+
+			// 4. 파일 첨부 유효성 검증
 			$(".upfile").each(function() {
 				if (this.files.length === 0) {
 					alert("이미지 파일을 첨부해주세요.");
+					$(this).siblings("button").focus();
 					isValid = false;
 					return false;
 				}// end if
@@ -238,6 +484,10 @@ input:not(span>input) {
 				return;
 			}// end if
 
+			$("#amenities input[type='checkbox']:checked").val("Y");
+
+			$("#frm").prop("target", "_self");
+			$("#frm").prop("action", "addRestareaProcess.jsp");
 			$("#frm").submit();
 		}// end if
 	}// addRestarea
@@ -257,8 +507,7 @@ input:not(span>input) {
 				</div>
 				<div id="wrap">
 					<div id="top"></div>
-					<form action="addRestareaProcess.jsp" enctype="multipart/form-data"
-						id="frm">
+					<form method="post" enctype="multipart/form-data" id="frm">
 						<div id="middle">
 							<div>
 								<div id="table1">
@@ -312,35 +561,32 @@ input:not(span>input) {
 											<td><label>주차장 규모</label></td>
 											<td><input type="text" name="parkingScale"></td>
 										</tr>
-										<tr>
+										<tr id="amenities">
 											<td><label>부가시설</label></td>
 											<td colspan="3" id="flag"><span style="margin-left: 0"><label>수면실</label><input
-													type="checkbox" name="restareaFlag" value="sleepingRoom"></span>
-												<span><label>샤워실</label><input type="checkbox"
-													name="restareaFlag" value="showerRoom"></span> <span><label>쉼터</label><input
-													type="checkbox" name="restareaFlag" value="restHub"></span>
-												<span><label>수유실</label><input type="checkbox"
-													name="restareaFlag" value="nursingRoom"></span> <span><label>약국</label><input
-													type="checkbox" name="restareaFlag" value="pharmacy"></span>
-												<span><label>농산물판매장</label><input type="checkbox"
-													name="restareaFlag" value="agricultureMarket"></span> <span><label>세차장</label><input
-													type="checkbox" name="restareaFlag" value="carWash"></span>
-												<span><label>경정비소</label><input type="checkbox"
-													name="restareaFlag" value="carRepair"></span></td>
+													type="checkbox" name="sleepingRoom"></span> <span><label>샤워실</label><input
+													type="checkbox" name="showerRoom"></span> <span><label>쉼터</label><input
+													type="checkbox" name="restHub"></span> <span><label>수유실</label><input
+													type="checkbox" name="nursingRoom"></span> <span><label>약국</label><input
+													type="checkbox" name="pharmacy"></span> <span><label>농산물판매장</label><input
+													type="checkbox" name="agricultureMarket"></span> <span><label>세차장</label><input
+													type="checkbox" name="carWash"></span> <span><label>경정비소</label><input
+													type="checkbox" name="carRepair"></span></td>
 										</tr>
 									</table>
 								</div>
-								<div class="extra">
+								<div class="extra" id="fac1">
 									<div>
 										<label>볼거리 리스트</label> <span>
-											<button type="button" class="addItem">항목 추가</button>
+											<button type="button" class="addItem" id="addFac1">항목
+												추가</button>
 											<button type="button" class="removeItem">선택 항목 삭제</button>
 										</span>
 									</div>
 									<table>
 										<tr class="frm2">
 											<td><label>볼거리명</label></td>
-											<td><input type="text" name="fac1Name"></td>
+											<td><input type="text" name="fac1Name_0"></td>
 											<td rowspan="3"><input type="checkbox"
 												class="removeFlag"></td>
 										</tr>
@@ -348,27 +594,28 @@ input:not(span>input) {
 											<td><label>볼거리 사진</label></td>
 											<td class="pic"><label>800x500 / png, jpg 가능</label> <input
 												type="text" placeholder="첨부 파일" disabled="disabled">
-												<input type="file" accept="image/*" name="fac1Img"
+												<input type="file" accept="image/*" name="fac1Img_0"
 												class="upfile" style="display: none" />
 												<button type="button" class="btnUpload">파일 첨부</button></td>
 										</tr>
 										<tr class="frm2">
 											<td><label>볼거리 문구</label></td>
-											<td><input type="text" name="fac1Phrase"></td>
+											<td><input type="text" name="fac1Phrase_0"></td>
 										</tr>
 									</table>
 								</div>
-								<div class="extra">
+								<div class="extra" id="fac2">
 									<div>
 										<label>먹거리 리스트</label> <span>
-											<button type="button" class="addItem">항목 추가</button>
+											<button type="button" class="addItem" id="addFac2">항목
+												추가</button>
 											<button type="button" class="removeItem">선택 항목 삭제</button>
 										</span>
 									</div>
 									<table>
 										<tr class="frm2">
 											<td><label>먹거리명</label></td>
-											<td><input type="text" name="fac2Name"></td>
+											<td><input type="text" name="fac2Name_0"></td>
 											<td rowspan="3"><input type="checkbox"
 												class="removeFlag"></td>
 										</tr>
@@ -376,27 +623,28 @@ input:not(span>input) {
 											<td><label>먹거리 사진</label></td>
 											<td class="pic"><label>800x500 / png, jpg 가능</label> <input
 												type="text" placeholder="첨부 파일" disabled="disabled">
-												<input type="file" accept="image/*" name="fac2Img"
+												<input type="file" accept="image/*" name="fac2Img_0"
 												class="upfile" style="display: none" />
 												<button type="button" class="btnUpload">파일 첨부</button></td>
 										</tr>
 										<tr class="frm2">
 											<td><label>먹거리 문구</label></td>
-											<td><input type="text" name="fac2Phrase"></td>
+											<td><input type="text" name="fac2Phrase_0"></td>
 										</tr>
 									</table>
 								</div>
-								<div class="extra">
+								<div class="extra" id="fac3">
 									<div>
 										<label>편의시설 리스트</label> <span>
-											<button type="button" class="addItem">항목 추가</button>
+											<button type="button" class="addItem" id="addFac3">항목
+												추가</button>
 											<button type="button" class="removeItem">선택 항목 삭제</button>
 										</span>
 									</div>
 									<table>
 										<tr class="frm2">
 											<td><label>편의시설명</label></td>
-											<td><input type="text" name="fac3Name"></td>
+											<td><input type="text" name="fac3Name_0"></td>
 											<td rowspan="3"><input type="checkbox"
 												class="removeFlag"></td>
 										</tr>
@@ -404,13 +652,13 @@ input:not(span>input) {
 											<td><label>편의시설 사진</label></td>
 											<td class="pic"><label>800x500 / png, jpg 가능</label> <input
 												type="text" placeholder="첨부 파일" disabled="disabled">
-												<input type="file" accept="image/*" name="fac3Img"
+												<input type="file" accept="image/*" name="fac3Img_0"
 												class="upfile" style="display: none" />
 												<button type="button" class="btnUpload">파일 첨부</button></td>
 										</tr>
 										<tr class="frm2">
 											<td><label>편의시설 문구</label></td>
-											<td><input type="text" name="fac3Phrase"></td>
+											<td><input type="text" name="fac3Phrase_0"></td>
 										</tr>
 									</table>
 								</div>
@@ -420,7 +668,10 @@ input:not(span>input) {
 									id="btns">
 									<button type="button"
 										onclick="location.href='restarea_list.jsp?currentPage=${ param.currentPage }&keyword=${ param.keyword }'">취소</button>
-									<button type="button">미리보기</button>
+									<button type="button"
+										onclick="event.stopPropagation(); previewListRestarea()">목록 미리보기</button>
+									<button type="button"
+										onclick="event.stopPropagation(); previewDetailRestarea()">상세 미리보기</button>
 									<input type="button" value="추가" id="btnCreate"
 										class="btn btn-primary"
 										onclick="event.stopPropagation(); addRestarea()" />

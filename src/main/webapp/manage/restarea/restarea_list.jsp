@@ -235,13 +235,13 @@ td {
 							<tbody>
 								<c:if test="${ empty restareaList }">
 									<tr>
-										<td colspan="5" style="text-align: center;">등록된 휴게소가
+										<td colspan="6" style="text-align: center;">등록된 휴게소가
 											없습니다.</td>
 									</tr>
 								</c:if>
 								<c:forEach var="rmDTO" items="${ restareaList }" varStatus="i">
 									<tr style="cursor: pointer;"
-										onclick="location.href='restarea_detail.jsp?currentPage=${ currentPage }&code=${ rmDTO.restareaCode }'">
+										onclick="location.href='restarea_detail.jsp?currentPage=${ currentPage }&keyword=${ param.keyword }&code=${ rmDTO.restareaCode }'">
 										<td><c:out value="${ rmDTO.name }"></c:out></td>
 										<td><c:out value="${ rmDTO.line }"></c:out></td>
 										<td><c:out value="${ rmDTO.restareaTel }"></c:out></td>
